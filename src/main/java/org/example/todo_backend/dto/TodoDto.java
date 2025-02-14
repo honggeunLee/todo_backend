@@ -12,6 +12,7 @@ public class TodoDto {
     private String title;
     private String description;
     private Boolean completed;
+    private Boolean archived;
     private LocalDateTime createdAt;
     private List<TodoTagDto> todoTags;
 }

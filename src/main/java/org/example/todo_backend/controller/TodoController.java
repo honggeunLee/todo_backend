@@ -23,7 +23,7 @@ public class TodoController {
         return ResponseEntity.ok(createdTodo);
     }
 
-    @Operation(summary = "Todo 수정", description = "Todo의 제목, 내용, 중요성, 완료여부를 수정합니다.")
+    @Operation(summary = "Todo 수정", description = "Todo의 제목, 내용을 수정합니다.")
     @PutMapping("/{id}")
     public ResponseEntity<TodoDto> updateTodoWithTags(
             @PathVariable Long id,

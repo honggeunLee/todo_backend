@@ -12,6 +12,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@NamedEntityGraph(name = "todo-with-tags", attributeNodes = @NamedAttributeNode("todoTags"))
 public class Todo {
 
     @Id
@@ -27,7 +28,7 @@ public class Todo {
     @Builder.Default
     private Boolean archived = false;   // 아카이브 저장 유무
 
-    @OneToMany(mappedBy = "todo")
+    @OneToMany(mappedBy = "todo", fetch = FetchType.LAZY)
     private List<TodoTag> todoTags;     // 중간 테이블(TodoTag)과의 관계 설정
 
     @PrePersist

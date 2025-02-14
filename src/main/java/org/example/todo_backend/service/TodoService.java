@@ -9,11 +9,9 @@ import org.example.todo_backend.exception.TodoNotFoundException;
 import org.example.todo_backend.repository.TagRepository;
 import org.example.todo_backend.repository.TodoRepository;
 import org.example.todo_backend.repository.TodoTagRepository;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -105,7 +103,7 @@ public class TodoService {
         Todo todo = todoRepository.findById(todoId)
                 .orElseThrow(() -> new TodoNotFoundException("Todo not found with id " + todoId));
 
-        todo.setCompleted(true);
+        todo.setCompleted(!todo.getCompleted());
         todoRepository.save(todo);
     }
 
@@ -116,26 +114,14 @@ public class TodoService {
         Todo todo = todoRepository.findById(todoId)
                 .orElseThrow(() -> new TodoNotFoundException("Todo not found with id " + todoId));
 
-        todo.setArchived(true);
+        todo.setArchived(!todo.getArchived());
         todoRepository.save(todo);
     }
 
     // Todo 아카이브 조회
     public List<TodoDto> getArchivedTodos() {
-        List<Todo> archivedTodos = todoRepository.findByArchivedTrue(); // Repository에서 가져옴
+        List<Todo> archivedTodos = todoRepository.findByArchivedTrue();
         return archivedTodos.stream().map(this::convertToDto).collect(Collectors.toList());
-    }
-
-    // 완료된 Todo 자동 아카이브 (매일 자정 실행)
-    @Scheduled(cron = "0 0 0 * * ?")
-    @Transactional
-    public void archiveCompletedTodos() {
-        LocalDate sevenDaysAgo = LocalDate.now().minusDays(7);
-        List<Todo> todosToArchive = todoRepository.findCompletedBefore(sevenDaysAgo);
-        for (Todo todo : todosToArchive) {
-            todo.setArchived(true);
-            todoRepository.save(todo);
-        }
     }
 
     // Todo 삭제
@@ -188,6 +174,7 @@ public class TodoService {
         todoDto.setTitle(todo.getTitle());
         todoDto.setDescription(todo.getDescription());
         todoDto.setCompleted(todo.getCompleted());
+        todoDto.setArchived(todo.getArchived());
         todoDto.setCreatedAt(todo.getCreatedAt());
 
         List<TodoTagDto> todoTagDtos = Optional.ofNullable(todo.getTodoTags())
