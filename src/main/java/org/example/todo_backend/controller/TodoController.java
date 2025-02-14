@@ -16,7 +16,7 @@ public class TodoController {
 
     private final TodoService todoService;
 
-    @Operation(summary = "TODO 등록", description = "Todo를 등록하면서 태그를 등록할 수 있습니다.")
+    @Operation(summary = "TODO 등록", description = "Todo를 등록합니다.")
     @PostMapping
     public ResponseEntity<TodoDto> createTodoWithTags(@RequestBody TodoCreateRequestDto dto) {
         TodoDto createdTodo = todoService.createTodoWithTags(dto);
